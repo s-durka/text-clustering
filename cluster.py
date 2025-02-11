@@ -6,14 +6,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 from sklearn.decomposition import PCA
 
-# from matplotlib import pyplot as plt
-
-
 def get_paths(file) -> np.ndarray:
     with open(file) as f:
         paths = f.readlines()
         # return np.array(["./training_samples/" + path.rstrip() for path in paths])
         return np.array([path.rstrip() for path in paths])
+
 
 def get_images(paths: np.ndarray):
     ret = []
@@ -25,7 +23,7 @@ def get_images(paths: np.ndarray):
 
 
 '''
-    crop and scale images:
+    Crop and scale images:
     input: images - array containing numpy 2D array of 
                     greyscale pixel values 0-225
     output: array of normalized 2D arrays
@@ -40,29 +38,28 @@ def normalize_images(images: np.ndarray, eps=10, resize_to=60):
         n_rows = img.shape[0]
         n_cols = img.shape[1]
     
-        # print(img, "\n")
-        # columns
-        # left -> right:
+        # columns left to right:
         for col in range (n_cols):
             if WHITE - np.min(img[:,col]) < eps:
                 img = np.delete(img, col, axis=1)
             else:
                 break
-        # right -> left:
+
+        # columns right to left:
         for col in range (n_cols - 1, -1, -1):
             if WHITE - np.min(img[:,col]) < eps:      # if entire column is white (- epsilon),
-                img = np.delete(img, col, axis=1)   # then remove it
+                img = np.delete(img, col, axis=1)     # then remove it
             else:
                 break
 
-        # rows
-        # top -> bottom
+        # rows top to bottom
         for row in range(n_rows):
             if WHITE - np.min(img[row]) < eps:
                 img = np.delete(img, row, axis=0)
             else:
                 break
-        # bottom -> top
+            
+        # rows bottom to top
         for row in range(n_rows -1, -1, -1):
             if WHITE - np.min(img[row]) < eps:
                 img = np.delete(img, row, axis=0)
@@ -77,7 +74,6 @@ def normalize_images(images: np.ndarray, eps=10, resize_to=60):
         normalized_images.append(flat_img)
 
     return StandardScaler().fit_transform(np.array(normalized_images))
-    # return np.array(normalized_images)
 
 
 def create_output_list(labels, paths):
@@ -87,6 +83,9 @@ def create_output_list(labels, paths):
     return lists
 
 
+'''
+    Create an HTML file with grouped images
+'''
 def create_output_files(lists):
     with open("output.txt", "w") as out:
         for j in range(len(lists)):
@@ -127,10 +126,8 @@ if __name__ == '__main__':
     X = pca.fit_transform(X)
     new_n = np.cumsum(len(pca.explained_variance_ratio_))
     print("new number of components:", new_n)
-    
-    # model = BisectingKMeans(n_clusters=None, init='k-means++', max_iter = 100)
-    # model.fit(X)
 
+    # find the best number of clusters for the K-Means algorithm
     sse = []
     list_k = list(range(2, MAX_CLUSTERS, 20))
     best_sscore = 0
@@ -149,17 +146,11 @@ if __name__ == '__main__':
         elif ss >= second_best_ss:
             second_best_ss = ss
             second_best_k = k       
-        # sse.append(ss)
-    # plt.figure(figsize=(6, 6))
-    # plt.plot(list_k, sse, '-o')
-    # plt.xlabel(r'Number of clusters *k*')
-    # plt.ylabel('Sum of squared distance');
-    # plt.show()
 
-    # sse = []
-    print("best K:", best_k)
-    print("second best K", second_best_k)
+    print("best K: ", best_k)
+    print("second best K: ", second_best_k)
 
+    # narrow down the search for the optimal number of clusters
     fromk = min(second_best_k, best_k)
     fromk = max(2, fromk -10)
     tok = max(second_best_k, best_k)
@@ -172,9 +163,8 @@ if __name__ == '__main__':
         if ss >= best_sscore:
             best_sscore = ss
             best_k = k
-        # sse.append(ss)
 
-    print("best K:", best_k)
+    print("best number of clusters for the K-Means algorithm:", best_k)
 
     km = KMeans(n_clusters=best_k, n_init='auto')
     km.fit(X)
