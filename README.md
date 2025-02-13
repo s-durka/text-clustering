@@ -1,33 +1,32 @@
-**Problem description**
+# **Image Clustering using K-Means**  
 
-The purpose of the program is to cluster images of various characters.
+## **Problem Description**  
+The purpose of this program is to **cluster images** of various characters using machine learning techniques. The dataset contains images of different resolutions, depicting characters with varying styles, thickness, and sizes.
 
-**Dataset specifics**
+## 📂 **Dataset Details**  
+🔗 **Dataset Link:** [Download Here](https://www.dropbox.com/scl/fo/wp4iz69odzi8ldnplwp0h/h?rlkey=udboc94aueqzs5rom9fpcjfvm&dl=0)  
 
-link to dataset:
-https://www.dropbox.com/scl/fo/wp4iz69odzi8ldnplwp0h/h?rlkey=udboc94aueqzs5rom9fpcjfvm&dl=0
+### 🔍 **Challenges in the Dataset:**  
+- Images include individual characters, character sequences, and fragments.  
+- The number of **decision classes** is unknown due to the presence of incomplete or joined letters.  
+- Some letters may be **indistinguishable**, such as:  
+  - `"I"`, `"|"`, and `"1"`  
+  - `"m"` and `"rn"`  
 
--- The images contain images of various resolutions representing characters (or character sequences) of various sizes, thickness, style etc.
-  
--- Unknown number of decision classes - in addition to regular letters, there are fragments of characters and characters glued together. 
+---
 
--- Some letters may remain indistinguishable, eg "I", "|" and "1" or "m" and "rn".
+## **Solution Approach**  
+This solution utilizes the **K-Means clustering algorithm** to group similar images.  
 
-**Solution**
+### **Steps Involved:**  
+1️⃣ **Preprocessing:**  
+   - Convert images to **grayscale** numpy arrays (values: `0-255`).  
+   - Resize images to a fixed dimension.  
+   - Flatten each 2D image into a **1D feature vector**.  
 
-The solution uses the K-Means algorithm to cluster the input images. 
-Firstly, it normalizes the data by changing images to numpy arrays of greyscale values 0-255 of set dimensions, then it flattens the 2D array into a 1D vector.
-Second, it applies PCA to reduce the dimensionality of the problem.
-Lastly, it finds the optimal number of clusters 'n' by comparing silhouette scores for re-runs of the algorithm, and produces clustering with the best chosen number of 'n'.
+2️⃣ **Dimensionality Reduction:**  
+   - Apply **Principal Component Analysis (PCA)** to reduce feature space.  
 
-If the number of clusters is too low, images representing the same letter may be labeled as different (split into different clusters). On the other hand, if there are too few clusters, images of two different letters will end up being classified as the same kind. The presented solution tries to balance the two issues.
-
-The distance metric used is the standard Euclidean distance, as the K-Means algorithm is used.
-
--------------------------------------------------------------
-How to run:
--------------------------------------------------------------
-    python3 -m venv py_env
-    source ./py_env/bin/activate
-    pip install -r requirements.txt
-    python3 ./cluster.py example.txt
+3️⃣ **Clustering with K-Means:**  
+   - Determine the **optimal number of clusters (n)** by evaluating **silhouette scores** from multiple runs.  
+   - Perform
