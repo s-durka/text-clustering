@@ -29,4 +29,21 @@ This solution utilizes the **K-Means clustering algorithm** to group similar ima
 
 3️⃣ **Clustering with K-Means:**  
    - Determine the **optimal number of clusters (n)** by evaluating **silhouette scores** from multiple runs.  
-   - Perform
+   - Perform clustering using **Euclidean distance** as the metric.  
+
+### ** Balancing Clustering Issues:**  
+- If **n is too low**, the same letter may be split into different clusters.  
+- If **n is too high**, different letters may be grouped incorrectly.  
+- This approach aims to **find a balance** between these issues.  
+
+---
+
+## **Run the Program**  
+
+```bash
+# (in a Python virtual environment)
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the clustering script
+python3 ./cluster.py <path-to-dataset>
